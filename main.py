@@ -1,7 +1,7 @@
-from data.time_data_graph import time_data_graph
+from data.create_metrics import create_metrics
 
 def main():
-    time_data_graph() #ГРАФИК ВРЕМЕНИ РАБОТЫ
+    create_metrics()#ГРАФИК ВРЕМЕНИ РАБОТЫ
 
 if __name__ == "__main__":
     main()
