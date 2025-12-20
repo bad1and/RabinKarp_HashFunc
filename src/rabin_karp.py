@@ -1,22 +1,59 @@
 import time
+import math
 
 
 class RabinKarp:
-    """Упрощённая реализация алгоритма Рабина-Карпа с одной хеш-функцией"""
+    """Реализация алгоритма Рабина-Карпа с поддержкой разных хеш-функций"""
 
-    def __init__(self, hash_func):
+    def __init__(self, hash_func, hash_name: str = ""):
         self.hash_func = hash_func
+        self.hash_name = hash_name
         self.collisions = 0
         self.checks = 0
         self.time_ns = 0
 
-    def _simple_rolling_hash(self, old_hash: int, old_char: str, new_char: str) -> int:
-        """
-        Скользящий хеш для функции суммы.
-        Если old_hash = сумма всех символов старого окна,
-        то новый хеш = старый - уходящий + приходящий
-        """
+    def _get_rolling_func(self, pattern_length: int, p: int = 31, m: int = 10 ** 9 + 7):
+        """Возвращает правильную функцию скользящего хеша для текущей хеш-функции"""
+
+        # Для simple_hash (сумма кодов)
+        if "simple" in self.hash_name.lower():
+            return self._simple_rolling
+
+        # Для weighted_sum_hash
+        elif "weighted" in self.hash_name.lower():
+            return self._weighted_rolling
+
+        # Для polynomial_hash
+        elif "polynomial" in self.hash_name.lower():
+            return lambda h, old, new: self._polynomial_rolling(h, old, new, pattern_length, p, m)
+
+        # Для остальных - пересчитываем с нуля
+        else:
+            return None
+
+    def _simple_rolling(self, old_hash: int, old_char: str, new_char: str) -> int:
+        """Скользящий хеш для simple_hash (сумма кодов)"""
         return old_hash - ord(old_char) + ord(new_char)
+
+    def _weighted_rolling(self, old_hash: int, old_char: str, new_char: str,
+                          first_char_weight: int, base: int = 31) -> int:
+        """Скользящий хеш для weighted_sum_hash"""
+        # Вычитаем первый символ с весом, делим на base, добавляем новый
+        return (old_hash - ord(old_char) * first_char_weight) * base + ord(new_char)
+
+    def _polynomial_rolling(self, old_hash: int, old_char: str, new_char: str,
+                            m: int, p: int = 31, mod: int = 10 ** 9 + 7) -> int:
+        """Скользящий хеш для polynomial_hash"""
+        # Предварительно вычисляем p^(m-1) mod mod
+        p_pow = pow(p, m - 1, mod)
+
+        # Удаляем старый символ: old_hash = old_char*p^(m-1) + остальное
+        new_hash = (old_hash - ord(old_char) * p_pow) % mod
+
+        # Умножаем на p и добавляем новый символ
+        new_hash = (new_hash * p + ord(new_char)) % mod
+
+        return new_hash
 
     def find(self, pattern: str, text: str) -> int:
         """
@@ -42,10 +79,18 @@ class RabinKarp:
         pattern_hash = self.hash_func(pattern)
 
         # 2. Вычисляем хеш первого окна текста
-        first_window = text[0:m]
+        first_window = text[:m]
         window_hash = self.hash_func(first_window)
 
-        # 3. Основной цикл поиска
+        # 3. Получаем функцию для скользящего хеша
+        rolling_func = self._get_rolling_func(m)
+
+        # Для weighted_hash нужно вычислить вес первого символа
+        first_char_weight = 1
+        if "weighted" in self.hash_name.lower():
+            first_char_weight = 31 ** (m - 1)
+
+        # 4. Основной цикл поиска
         for i in range(n - m + 1):
             # Если хеши совпали
             if window_hash == pattern_hash:
@@ -63,10 +108,20 @@ class RabinKarp:
 
             # Пересчитываем хеш для следующего окна (если оно есть)
             if i < n - m:
-                # Убираем уходящий символ, добавляем приходящий
-                old_char = text[i]
-                new_char = text[i + m]
-                window_hash = self._simple_rolling_hash(window_hash, old_char, new_char)
+                if rolling_func:
+                    old_char = text[i]
+                    new_char = text[i + m]
+
+                    if "weighted" in self.hash_name.lower():
+                        window_hash = rolling_func(window_hash, old_char, new_char, first_char_weight)
+                    elif "polynomial" in self.hash_name.lower():
+                        window_hash = rolling_func(window_hash, old_char, new_char)
+                    else:
+                        window_hash = rolling_func(window_hash, old_char, new_char)
+                else:
+                    # Для функций без скользящего хеша пересчитываем с нуля
+                    window = text[i + 1:i + m + 1]
+                    window_hash = self.hash_func(window)
 
         # Паттерн не найден
         self.time_ns = time.perf_counter_ns() - start_time

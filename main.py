@@ -5,7 +5,10 @@ import os
 
 from src.rabin_karp import RabinKarp
 from src.hash_simple import simple_hash
-from src.weighted_hash import weighted_sum_hash_optimized
+from src.weighted_hash import weighted_sum_hash
+from src.polynomial_hash import polynomial_hash
+from src.lite_crc32 import rolling_crc32
+from src.double_hash import double_hash
 
 
 def load_text(filepath: str) -> str:
@@ -24,16 +27,20 @@ def main():
     ##############################################################
     #TODO: ИЗМЕНЯЕМЫЕ ПАРАМЕТРЫ
 
-    file_name = "test.txt"
+    file_name = "alice.txt"
 
     # Тестируем разные паттерны
-    pattern = "алгоритм"
+    pattern = "Игра идет сейчас гораздо лучше"
 
     hash_types = [
         simple_hash,
-        weighted_sum_hash_optimized,
+        weighted_sum_hash,
+        polynomial_hash,
+        rolling_crc32,
+        double_hash,
     ]
 
+    # TODO: ИЗМЕНЯЕМЫЕ ПАРАМЕТРЫ
     ##############################################################
 
     # Проверяем наличие тестового файла
@@ -77,6 +84,9 @@ def main():
             result_file.write(f"  Коллизии: {stats['collisions']}\n")
             result_file.write(f"  Проверки: {stats['checks']}\n")
             result_file.write(f"  Время: {stats['time_ms']:.4f} мс\n")
+            result_file.write("-" * 40 + "\n")
+
+            
             result_file.write("-" * 40 + "\n")
 
         # Итоговая статистика

@@ -1,5 +1,5 @@
 def simple_hash(s: str) -> int:
-    name = "simple_hash_summ_codes"
+    name = "Simple_Hash"
     """
     Самая простая хеш-функция - сумма кодов символов.
     Много коллизий, но простая для понимания.
