@@ -76,7 +76,7 @@ def main():
             result_file.write(f"  Позиция: {position}\n")
             result_file.write(f"  Коллизии: {stats['collisions']}\n")
             result_file.write(f"  Проверки: {stats['checks']}\n")
-            result_file.write(f"  Время: {stats['time_ms']:.3f} мс\n")
+            result_file.write(f"  Время: {stats['time_ms']:.4f} мс\n")
             result_file.write("-" * 40 + "\n")
 
         # Итоговая статистика
