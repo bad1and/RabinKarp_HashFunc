@@ -18,63 +18,47 @@ def load_text(filepath: str) -> str:
             return f.read()
 
 
-def create_test_file():
-    """Создаёт тестовый файл если его нет"""
-    test_text = """Алгоритм Рабина — Карпа — это алгоритм поиска строки, 
-который ищет шаблон, то есть подстроку, в тексте, используя хеширование.
-Алгоритм был разработан в 1987 году Ричардом Рабином и Майклом Карпом.
-Алгоритм лучше всего подходит для поиска нескольких шаблонов в тексте."""
-
-    os.makedirs('texts', exist_ok=True)
-    with open('texts/test.txt', 'w', encoding='utf-8') as f:
-        f.write(test_text)
-
-    print("Создан тестовый файл: texts/test.txt")
-
-
 def main():
 
+    #TODO: НАЗВАНИЕ ФАЙЛА
+    file_name = "test.txt"
+
+
     # Проверяем наличие тестового файла
-    test_file = "texts/test.txt"
-    if not os.path.exists(test_file):
-        print(f"Файл {test_file} не найден!")
-        create_test_file()
+    path_to_file = f"texts/{file_name}"
+    if not os.path.exists(path_to_file):
+        print(f"Файл {path_to_file} не найден!")
+        return
 
     # Загружаем текст
-    text = load_text(test_file)
+    text = load_text(path_to_file)
     if not text:
         print("Ошибка: не удалось загрузить текст")
         return
 
-    print("=" * 60)
-    print("ТЕСТ АЛГОРИТМА РАБИНА-КАРПА")
-    print("=" * 60)
-    print(f"Длина текста: {len(text)} символов")
-    print(f"Файл: {test_file}")
-    print("-" * 60)
-
-    # Создаём экземпляр алгоритма с простой хеш-функцией
-    algorithm = RabinKarp(simple_hash)
+    print(f"Файл: {path_to_file}")
 
     # Тестируем разные паттерны
-    test_patterns = [
-        "алгоритм",  # Должен найтись
-        "хеширование",  # Должен найтись
-        "abcdefgh",  # Не должен найтись
-        "Алгоритм Рабина",  # Должен найтись
+    pattern = "алгоритм"
+
+    hash_types = [
+        simple_hash,
     ]
+
 
     # Открываем файл для записи результатов
     with open("results/results.txt", "w", encoding="utf-8") as result_file:
         result_file.write("РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ\n")
         result_file.write("=" * 60 + "\n")
-        result_file.write(f"Текст: {test_file}\n")
+        result_file.write(f"Текст: {path_to_file}\n")
         result_file.write(f"Длина текста: {len(text)} символов\n")
+        result_file.write(f"Паттерн: '{pattern}' (длина: {len(pattern)})\n")
         result_file.write("=" * 60 + "\n\n")
 
-        for pattern in test_patterns:
-            print(f"\nПоиск паттерна: '{pattern}'")
-            print(f"Длина паттерна: {len(pattern)}")
+
+        for hash_type in hash_types:
+            # Создаём экземпляр алгоритма с простой хеш-функцией
+            algorithm = RabinKarp(hash_type)
 
             # Запускаем поиск
             position = algorithm.find(pattern, text)
@@ -82,18 +66,8 @@ def main():
             # Получаем статистику
             stats = algorithm.get_stats()
 
-            # Выводим результат
-            if position != -1:
-                print(f"✓ Найдено на позиции: {position}")
-            else:
-                print("✗ Не найдено")
-
-            print(f"  Коллизии: {stats['collisions']}")
-            print(f"  Проверки: {stats['checks']}")
-            print(f"  Время: {stats['time_ms']:.3f} мс")
-
             # Записываем в файл
-            result_file.write(f"Паттерн: '{pattern}' (длина: {len(pattern)})\n")
+            result_file.write(f"Хеш-функция: {simple_hash.__name__}\n")
             result_file.write(f"  Найдено: {'Да' if position != -1 else 'Нет'}\n")
             result_file.write(f"  Позиция: {position}\n")
             result_file.write(f"  Коллизии: {stats['collisions']}\n")
@@ -103,8 +77,7 @@ def main():
 
         # Итоговая статистика
         result_file.write("\n" + "=" * 60 + "\n")
-        result_file.write("Хеш-функция: simple_hash (сумма кодов символов)\n")
-        result_file.write("Алгоритм: Рабина-Карпа (упрощённая версия)\n")
+
 
     print("\n" + "=" * 60)
     print(f"Результаты сохранены в файл: results.txt")
