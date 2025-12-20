@@ -5,6 +5,7 @@ import os
 
 from src.rabin_karp import RabinKarp
 from src.hash_simple import simple_hash
+from src.weighted_hash import weighted_sum_hash_optimized
 
 
 def load_text(filepath: str) -> str:
@@ -30,9 +31,10 @@ def main():
 
     hash_types = [
         simple_hash,
+        weighted_sum_hash_optimized,
     ]
 
-##############################################################
+    ##############################################################
 
     # Проверяем наличие тестового файла
     path_to_file = f"texts/{file_name}"
@@ -50,8 +52,8 @@ def main():
 
     # Открываем файл для записи результатов
     with open("results/results.txt", "w", encoding="utf-8") as result_file:
-        result_file.write("РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ\n")
-        result_file.write("=" * 60 + "\n")
+        result_file.write("РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ\n\n")
+
         result_file.write(f"Текст: {path_to_file}\n")
         result_file.write(f"Длина текста: {len(text)} символов\n")
         result_file.write(f"Паттерн: '{pattern}' (длина: {len(pattern)})\n")
@@ -69,7 +71,7 @@ def main():
             stats = algorithm.get_stats()
 
             # Записываем в файл
-            result_file.write(f"Хеш-функция: {simple_hash.__name__}\n")
+            result_file.write(f"Хеш-функция: {hash_type.__name__}\n")
             result_file.write(f"  Найдено: {'Да' if position != -1 else 'Нет'}\n")
             result_file.write(f"  Позиция: {position}\n")
             result_file.write(f"  Коллизии: {stats['collisions']}\n")
