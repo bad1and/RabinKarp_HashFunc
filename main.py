@@ -29,8 +29,17 @@ def main():
 
     file_name = "alice.txt"
 
-    # Тестируем разные паттерны
-    pattern = "Игра идет сейчас гораздо лучше"
+    text = load_text(f"texts/{file_name}")
+    patterns = [
+        text[:1],  # первый символ текста
+        text[:5],  # первые 5 символов
+        text[:10],  # первые 10 символов
+        text[:20],  # первые 20 символов
+        text[:50],
+        text[:100],
+        text[:150],
+        text[:200],# первые 50 символов
+    ]
 
     hash_types = [
         simple_hash,
@@ -63,34 +72,30 @@ def main():
 
         result_file.write(f"Текст: {path_to_file}\n")
         result_file.write(f"Длина текста: {len(text)} символов\n")
-        result_file.write(f"Паттерн: '{pattern}' (длина: {len(pattern)})\n")
         result_file.write("=" * 60 + "\n\n")
 
 
         for hash_type in hash_types:
-            # Создаём экземпляр алгоритма с простой хеш-функцией
-            algorithm = RabinKarp(hash_type)
+            result_file.write(f"\nХеш-функция: {hash_type.__name__}\n\n")
+            for pattern in patterns:
 
-            # Запускаем поиск
-            position = algorithm.find(pattern, text)
+                # Создаём экземпляр алгоритма с простой хеш-функцией
+                algorithm = RabinKarp(hash_type)
 
-            # Получаем статистику
-            stats = algorithm.get_stats()
+                # Запускаем поиск
+                position = algorithm.find(pattern, text)
 
-            # Записываем в файл
-            result_file.write(f"Хеш-функция: {hash_type.__name__}\n")
-            result_file.write(f"  Найдено: {'Да' if position != -1 else 'Нет'}\n")
-            result_file.write(f"  Позиция: {position}\n")
-            result_file.write(f"  Коллизии: {stats['collisions']}\n")
-            result_file.write(f"  Проверки: {stats['checks']}\n")
-            result_file.write(f"  Время: {stats['time_ms']:.4f} мс\n")
-            result_file.write("-" * 40 + "\n")
+                # Получаем статистику
+                stats = algorithm.get_stats()
 
-            
-            result_file.write("-" * 40 + "\n")
-
-        # Итоговая статистика
-        result_file.write("\n" + "=" * 60 + "\n")
+                # Записываем в файл
+                result_file.write(f"Длина паттерна: {len(pattern)}\n")
+                result_file.write(f"  Найдено: {'Да' if position != -1 else 'Нет'}\n")
+                result_file.write(f"  Коллизии: {stats['collisions']}\n")
+                result_file.write(f"  Проверки: {stats['checks']}\n")
+                result_file.write(f"  Время: {stats['time_ms']:.4f} мс\n")
+                result_file.write("-" * 40 + "\n")
+            result_file.write("\n" + "=" * 60)
 
 
     print("\n" + "=" * 60)
@@ -100,3 +105,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
