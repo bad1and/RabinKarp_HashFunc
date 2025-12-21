@@ -4,11 +4,11 @@ import os
 from src.double_hash import double_hash
 from src.hash_simple import simple_hash
 from src.lite_crc32 import rolling_crc32
-from src.polynomial_hash import polynomial_hash
+from src.chetsum_hash import chetsum_hash
 from src.rabin_karp import RabinKarp
-from src.weighted_hash import weighted_sum_hash
+from src.first_last_hash import first_last_hash
 
-file_name = "alice.txt"
+time_file_name = "alice.txt"
 
 
 def load_text(filepath: str) -> str:
@@ -22,7 +22,7 @@ def load_text(filepath: str) -> str:
             return f.read()
 
 
-def save_to_csv(data, filename=f"results/alice_text/time_graph_data_{file_name[:5]}.csv"):
+def save_to_csv(data, filename=f"results/time/time_graph_data_{time_file_name[:5]}.csv"):
     """Сохраняет данные в CSV файл для графиков"""
 
     # Создаем папку results если её нет
@@ -49,7 +49,7 @@ def save_to_csv(data, filename=f"results/alice_text/time_graph_data_{file_name[:
     return filename
 
 
-def save_summary_to_txt(data, filename=f"results/alice_text/time_summary_{file_name[:5]}.txt"):
+def save_summary_to_txt(data, filename=f"results/time/time_summary_{time_file_name[:5]}.txt"):
     """Сохраняет текстовую сводку результатов"""
 
     with open(filename, 'w', encoding='utf-8') as f:
@@ -91,7 +91,7 @@ def save_summary_to_txt(data, filename=f"results/alice_text/time_summary_{file_n
     return filename
 
 
-def create_metrics():
+def create_time_metrics():
     ##############################################################
     # ИЗМЕНЯЕМЫЕ ПАРАМЕТРЫ
 
@@ -102,15 +102,15 @@ def create_metrics():
     # Хеш-функции с именами
     hash_functions = [
         ("simple_hash", simple_hash),
-        ("weighted_sum_hash", weighted_sum_hash),
-        ("polynomial_hash", polynomial_hash),
+        ("first_last_hash", first_last_hash),
+        ("chetsum_hash", chetsum_hash),
         ("rolling_crc32", rolling_crc32),
         ("double_hash", double_hash),
     ]
     ##############################################################
 
     # Проверяем наличие файла
-    path_to_file = f"texts/{file_name}"
+    path_to_file = f"texts/{time_file_name}"
     if not os.path.exists(path_to_file):
         print(f"Файл {path_to_file} не найден!")
         return
