@@ -8,7 +8,7 @@ from src.chetsum_hash import chetsum_hash
 from src.rabin_karp import RabinKarp
 from src.first_last_hash import first_last_hash
 
-collizion_file_name = "dna.txt"
+collizion_file_name = "war_and_peace.txt"
 
 
 def load_text(filepath: str) -> str:

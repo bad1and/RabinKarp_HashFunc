@@ -12,7 +12,7 @@ def main():
     # time.sleep(2)
     # create_time_graphs()
 
-    # time.sleep(1)
+    time.sleep(1)
 
     # create_collision_metrics()
     # time.sleep(2)
@@ -22,7 +22,7 @@ def main():
 
     # create_checks_metrics()
     # time.sleep(2)
-    create_checks_graphs()
+    # create_checks_graphs()
 
 
 
