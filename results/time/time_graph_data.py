@@ -22,7 +22,7 @@ def load_text(filepath: str) -> str:
             return f.read()
 
 
-def save_to_csv(data, filename=f"results/time/time_graph_data_{time_file_name[:5]}.csv"):
+def save_to_csv(data, filename=f"results/time/time_graph_data_{time_file_name[:-4]}.csv"):
     """Сохраняет данные в CSV файл для графиков"""
 
     # Создаем папку results если её нет
@@ -49,7 +49,7 @@ def save_to_csv(data, filename=f"results/time/time_graph_data_{time_file_name[:5
     return filename
 
 
-def save_summary_to_txt(data, filename=f"results/time/time_summary_{time_file_name[:5]}.txt"):
+def save_summary_to_txt(data, filename=f"results/time/time_summary_{time_file_name[:-4]}.txt"):
     """Сохраняет текстовую сводку результатов"""
 
     with open(filename, 'w', encoding='utf-8') as f:

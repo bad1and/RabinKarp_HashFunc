@@ -22,7 +22,7 @@ def load_text(filepath: str) -> str:
             return f.read()
 
 
-def save_to_csv(data, filename=f"results/checks/checks_graph_data_{checks_file_name[:3]}.csv"):
+def save_to_csv(data, filename=f"results/checks/checks_graph_data_{checks_file_name[:-4]}.csv"):
     """Сохраняет данные о коллизиях в CSV файл"""
 
     with open(filename, 'w', encoding='utf-8', newline='') as csvfile:
@@ -150,7 +150,7 @@ def create_checks_metrics():
         csv_filename = save_to_csv(csv_data)
 
         # Создаём текстовую сводку
-        summary_filename = f"results/checks/checks_graph_summary_{checks_file_name[:3]}.txt"
+        summary_filename = f"results/checks/checks_graph_summary_{checks_file_name[:-4]}.txt"
         with open(summary_filename, 'w', encoding='utf-8') as f:
             f.write("СВОДКА РЕЗУЛЬТАТОВ КОЛЛИЗИЙ НА ДНК\n")
             f.write("=" * 70 + "\n\n")

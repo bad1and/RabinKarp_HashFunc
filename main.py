@@ -8,21 +8,21 @@ from results.graphics import create_time_graphs, create_collizion_graphs, create
 
 def main():
 
-    # create_time_metrics()
-    # time.sleep(2)
-    # create_time_graphs()
+    create_time_metrics()
+    time.sleep(2)
+    create_time_graphs()
 
     time.sleep(1)
 
-    # create_collision_metrics()
-    # time.sleep(2)
-    # create_collizion_graphs()
+    create_collision_metrics()
+    time.sleep(2)
+    create_collizion_graphs()
 
-    # time.sleep(1)
+    time.sleep(1)
 
-    # create_checks_metrics()
-    # time.sleep(2)
-    # create_checks_graphs()
+    create_checks_metrics()
+    time.sleep(2)
+    create_checks_graphs()
 
 
 
