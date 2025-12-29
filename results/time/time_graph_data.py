@@ -3,12 +3,13 @@ import os
 
 from src.double_hash import double_hash
 from src.hash_simple import simple_hash
+from src.linear_search import linear_search
 from src.lite_crc32 import rolling_crc32
 from src.chetsum_hash import chetsum_hash
 from src.rabin_karp import RabinKarp
 from src.first_last_hash import first_last_hash
 
-time_file_name = "war_and_peace.txt"
+time_file_name = "alice.txt"
 
 
 def load_text(filepath: str) -> str:
@@ -101,6 +102,7 @@ def create_time_metrics():
 
     # Хеш-функции с именами
     hash_functions = [
+        ("linear_hash", linear_search),
         ("simple_hash", simple_hash),
         ("first_last_hash", first_last_hash),
         ("chetsum_hash", chetsum_hash),

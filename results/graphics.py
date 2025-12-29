@@ -19,7 +19,9 @@ def create_time_graphs(csv_file=f"results/time/time_graph_data_{time_file_name[:
               'chetsum_hash': 'green',
               'first_last_hash': 'red',
               'rolling_crc32': 'purple',
-              'double_hash': 'orange'}
+              'double_hash': 'orange',
+              'linear_hash': 'black',
+              }
 
     for hash_func in df['hash_function'].unique():
         subset = df[df['hash_function'] == hash_func]
@@ -36,8 +38,8 @@ def create_time_graphs(csv_file=f"results/time/time_graph_data_{time_file_name[:
               fontsize=16, fontweight='bold', pad=20)
     plt.legend(fontsize=12, title="Хеш-функции", title_fontsize=13)
     plt.grid(True, alpha=0.3)
-    plt.xscale('linear')
-    plt.yscale('linear')
+    plt.xscale('log')
+    plt.yscale('log')
     plt.tight_layout()
     plt.savefig(f"results/time/time_graph_data_{time_file_name[:-4]}.png", dpi=300)
     print("TIME GRAPH СОЗДАН")
@@ -54,7 +56,9 @@ def create_collizion_graphs(csv_file=f"results/collizion/collision_graph_data_{c
               'chetsum_hash': 'green',
               'first_last_hash': 'red',
               'rolling_crc32': 'purple',
-              'double_hash': 'orange'}
+              'double_hash': 'orange',
+              'linear_hash': 'black',
+              }
 
     for hash_func in df['hash_function'].unique():
         subset = df[df['hash_function'] == hash_func]
@@ -71,7 +75,7 @@ def create_collizion_graphs(csv_file=f"results/collizion/collision_graph_data_{c
               fontsize=16, fontweight='bold', pad=20)
 
     plt.xscale('linear')
-    plt.yscale('linear')
+    plt.yscale('log')
     # plt.ylim(bottom=0.1)  # начинаем с 0.1 чтобы видеть нули на логарифмической шкале
 
     # Деления оси X (все значения длины паттерна)
@@ -100,7 +104,9 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
               'chetsum_hash': 'green',
               'first_last_hash': 'red',
               'rolling_crc32': 'purple',
-              'double_hash': 'orange'}
+              'double_hash': 'orange',
+              'linear_hash': 'black',
+              }
 
     for hash_func in df['hash_function'].unique():
         subset = df[df['hash_function'] == hash_func]
@@ -116,8 +122,8 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
     plt.title(f"График проверок ({checks_file_name})",
               fontsize=16, fontweight='bold', pad=20)
 
-    plt.xscale('linear')
-    plt.yscale('linear')
+    plt.xscale('log')
+    plt.yscale('log')
     # plt.ylim(bottom=0.1)  # начинаем с 0.1 чтобы видеть нули на логарифмической шкале
 
     # Деления оси X (все значения длины паттерна)

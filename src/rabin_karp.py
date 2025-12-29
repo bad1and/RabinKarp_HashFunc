@@ -8,12 +8,21 @@ class RabinKarp:
     def __init__(self, hash_func, hash_name: str = ""):
         self.hash_func = hash_func
         self.hash_name = hash_name
+
+        # Если передали linear_hash, но не указали имя
+        if hasattr(hash_func, 'name'):
+            self.hash_name = hash_func.name
+
         self.collisions = 0
         self.checks = 0
         self.time_ns = 0
 
     def _get_rolling_func(self, pattern_length: int, p: int = 31, m: int = 10 ** 9 + 7):
         """Возвращает правильную функцию скользящего хеша для текущей хеш-функции"""
+
+        # Для linear_hash (линейный поиск) - НЕТ скользящего хеша
+        if "linear" in self.hash_name.lower():
+            return None  # Будем пересчитывать каждый раз
 
         # Для simple_hash (сумма кодов)
         if "simple" in self.hash_name.lower():
