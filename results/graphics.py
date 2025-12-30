@@ -20,7 +20,7 @@ def create_time_graphs(csv_file=f"results/time/time_graph_data_{time_file_name[:
               'first_last_hash': 'red',
               'rolling_crc32': 'purple',
               'double_hash': 'orange',
-              'linear_hash': 'black',
+              'linear_search': 'black',
               }
 
     for hash_func in df['hash_function'].unique():
@@ -57,7 +57,6 @@ def create_collizion_graphs(csv_file=f"results/collizion/collision_graph_data_{c
               'first_last_hash': 'red',
               'rolling_crc32': 'purple',
               'double_hash': 'orange',
-              'linear_hash': 'black',
               }
 
     for hash_func in df['hash_function'].unique():
@@ -107,12 +106,12 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
         'first_last_hash': 'red',
         'rolling_crc32': 'purple',
         'double_hash': 'orange',
-        'linear_hash': 'black',
+        'linear_search': 'black',
     }
 
     # Основные хеш-функции на ax1
     for hash_func in df['hash_function'].unique():
-        if hash_func == 'linear_hash':
+        if hash_func == 'linear_search':
             continue
 
         subset = df[df['hash_function'] == hash_func]
@@ -123,12 +122,12 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
                  linewidth=2.5,
                  markersize=8)
 
-    # linear_hash на ax2
-    linear_data = df[df['hash_function'] == 'linear_hash']
+    # linear_search на ax2
+    linear_data = df[df['hash_function'] == 'linear_search']
     if not linear_data.empty:
         ax2.plot(linear_data['pattern_length'], linear_data['checks'],
                  marker='o',
-                 label='linear_hash (бейзлайн)',
+                 label='linear_search',
                  color='black',
                  linewidth=3,
                  markersize=10,
@@ -136,7 +135,7 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
 
     ax1.set_xlabel("Длина паттерна (символы)", fontsize=14)
     ax1.set_ylabel("Проверки (хеш-функции)", fontsize=14, color='blue')
-    ax2.set_ylabel("Проверки (linear_hash)", fontsize=14, color='black')
+    ax2.set_ylabel("Проверки (linear_search)", fontsize=14, color='black')
 
     plt.title(f"График проверок ({checks_file_name})",
               fontsize=16, fontweight='bold', pad=20)

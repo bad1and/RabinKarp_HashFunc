@@ -9,7 +9,7 @@ from src.linear_search import linear_search
 from src.lite_crc32 import rolling_crc32
 from src.rabin_karp import RabinKarp
 
-checks_file_name = "war_and_peace.txt"
+checks_file_name = "stih.txt"
 
 
 def load_text(filepath: str) -> str:
@@ -58,7 +58,7 @@ def create_checks_metrics():
 
     # Хеш-функции с именами
     hash_functions = [
-        ("linear_hash", linear_search),
+        ("linear_search", linear_search),
         ("simple_hash", simple_hash),
         ("first_last_hash", first_last_hash),
         ("chetsum_hash", chetsum_hash),
