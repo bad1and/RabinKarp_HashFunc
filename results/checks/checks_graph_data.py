@@ -1,15 +1,15 @@
 import csv
 import os
 
+from src.chetsum_hash import chetsum_hash
 from src.double_hash import double_hash
+from src.first_last_hash import first_last_hash
 from src.hash_simple import simple_hash
 from src.linear_search import linear_search
 from src.lite_crc32 import rolling_crc32
-from src.chetsum_hash import chetsum_hash
 from src.rabin_karp import RabinKarp
-from src.first_last_hash import first_last_hash
 
-checks_file_name = "alice.txt"
+checks_file_name = "war_and_peace.txt"
 
 
 def load_text(filepath: str) -> str:
@@ -84,7 +84,6 @@ def create_checks_metrics():
     print(f"Файл: {path_to_file}")
     print(f"Длина текста: {len(text)} символов")
 
-
     # Данные для CSV
     csv_data = []
 
@@ -145,7 +144,6 @@ def create_checks_metrics():
                 position != -1,
                 position
             ])
-
 
     # Сохраняем данные
     if csv_data:

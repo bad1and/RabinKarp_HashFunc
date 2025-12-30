@@ -64,7 +64,47 @@ class RabinKarp:
 
         return new_hash
 
+    def _linear_search(self, pattern: str, text: str, start_time: int) -> int:
+        """Оптимизированный линейный поиск для linear_hash"""
+        m = len(pattern)
+        n = len(text)
+        total_windows = n - m + 1
+
+        # Простой линейный поиск
+        for i in range(total_windows):
+            if text[i:i + m] == pattern:
+                self.checks = i + 1  # сколько окон проверили до нахождения
+                self.collisions = 0  # коллизий нет
+                self.time_ns = time.perf_counter_ns() - start_time
+                return i
+
+        # Не нашли
+        self.checks = total_windows  # проверили все окна
+        self.collisions = 0
+        self.time_ns = time.perf_counter_ns() - start_time
+        return -1
+
     def find(self, pattern: str, text: str) -> int:
+        # Сбрасываем статистику
+        self.collisions = 0
+        self.checks = 0
+
+        # Начинаем замер времени
+        start_time = time.perf_counter_ns()
+
+        # Проверка входных данных
+        if not pattern or not text or len(pattern) > len(text):
+            self.time_ns = time.perf_counter_ns() - start_time
+            return -1
+
+        m = len(pattern)
+        n = len(text)
+
+        # СПЕЦИАЛЬНАЯ ОБРАБОТКА ДЛЯ LINEAR_HASH
+        if "linear" in self.hash_name.lower():
+            return self._linear_search(pattern, text, start_time)
+
+
         """
         Поиск паттерна в тексте.
         Возвращает позицию первого вхождения или -1 если не найдено.

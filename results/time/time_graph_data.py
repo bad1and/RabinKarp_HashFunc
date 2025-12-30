@@ -9,7 +9,7 @@ from src.chetsum_hash import chetsum_hash
 from src.rabin_karp import RabinKarp
 from src.first_last_hash import first_last_hash
 
-time_file_name = "alice.txt"
+time_file_name = "war_and_peace.txt"
 
 
 def load_text(filepath: str) -> str:
@@ -98,7 +98,7 @@ def create_time_metrics():
 
     # Длины паттернов для тестирования
     pattern_lengths = [1, 5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 800, 1000, 1500, 2000, 2500, 3000, 3500, 4000,4500,
-                       5000,6000]
+                       5000,6000,8000,10000]
 
     # Хеш-функции с именами
     hash_functions = [
@@ -145,7 +145,7 @@ def create_time_metrics():
         for hash_name, hash_func in hash_functions:
 
             # Создаем алгоритм
-            algorithm = RabinKarp(hash_func)
+            algorithm = RabinKarp(hash_func, hash_name=hash_name)
 
             # Запускаем поиск
             position = algorithm.find(pattern, text)
