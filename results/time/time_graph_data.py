@@ -1,32 +1,28 @@
 import csv
 import os
 
+from src.chetsum_hash import chetsum_hash
 from src.double_hash import double_hash
+from src.first_last_hash import first_last_hash
 from src.hash_simple import simple_hash
 from src.linear_search import linear_search
 from src.lite_crc32 import rolling_crc32
-from src.chetsum_hash import chetsum_hash
 from src.rabin_karp import RabinKarp
-from src.first_last_hash import first_last_hash
 
 time_file_name = "stih.txt"
 
 
 def load_text(filepath: str) -> str:
-    """Загружает текст из файла"""
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return f.read()
     except:
-        # Пробуем другую кодировку если UTF-8 не работает
+
         with open(filepath, 'r', encoding='latin-1') as f:
             return f.read()
 
 
 def save_to_csv(data, filename=f"results/time/time_graph_data_{time_file_name[:-4]}.csv"):
-    """Сохраняет данные в CSV файл для графиков"""
-
-    # Создаем папку results если её нет
     os.makedirs("results", exist_ok=True)
 
     with open(filename, 'w', encoding='utf-8', newline='') as csvfile:
@@ -51,8 +47,6 @@ def save_to_csv(data, filename=f"results/time/time_graph_data_{time_file_name[:-
 
 
 def save_summary_to_txt(data, filename=f"results/time/time_summary_{time_file_name[:-4]}.txt"):
-    """Сохраняет текстовую сводку результатов"""
-
     with open(filename, 'w', encoding='utf-8') as f:
         f.write("РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ: ВРЕМЯ РАБОТЫ\n")
         f.write("=" * 70 + "\n\n")
@@ -97,8 +91,9 @@ def create_time_metrics():
     # ИЗМЕНЯЕМЫЕ ПАРАМЕТРЫ
 
     # Длины паттернов для тестирования
-    pattern_lengths = [1, 5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 800, 1000, 1500, 2000, 2500, 3000, 3500, 4000,4500,
-                       5000,6000,8000,10000]
+    pattern_lengths = [1, 5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 800, 1000, 1500, 2000, 2500, 3000, 3500, 4000,
+                       4500,
+                       5000, 6000, 8000, 10000]
 
     # Хеш-функции с именами
     hash_functions = [
@@ -131,10 +126,8 @@ def create_time_metrics():
     # Данные для CSV
     csv_data = []
 
-
     # Основной цикл тестирования
     for pattern_len in pattern_lengths:
-        # Берем паттерн из текста (не с начала, чтобы избежать заголовков)
         start_pos = 1000  # начинаем с 1000-го символа
         if start_pos + pattern_len > len(text):
             print(f"Пропускаем паттерн {pattern_len} символов: выходит за пределы текста")
@@ -143,14 +136,11 @@ def create_time_metrics():
         pattern = text[start_pos:start_pos + pattern_len]
 
         for hash_name, hash_func in hash_functions:
-
             # Создаем алгоритм
             algorithm = RabinKarp(hash_func, hash_name=hash_name)
 
-            # Запускаем поиск
             position = algorithm.find(pattern, text)
 
-            # Получаем статистику
             stats = algorithm.get_stats()
 
             # Сохраняем данные для CSV
@@ -172,7 +162,6 @@ def create_time_metrics():
         print(f"Текстовая сводка сохранена в: {txt_filename}")
         print(f"CSV данные для графиков: {csv_filename}")
 
-        # Группируем по функциям для сводки
         hash_results = {}
         for row in csv_data:
             hash_name = row[0]
@@ -180,7 +169,6 @@ def create_time_metrics():
                 hash_results[hash_name] = []
             hash_results[hash_name].append(row)
 
-        # Выводим лучшую функцию по времени
         fastest_func = None
         fastest_avg = float('inf')
 

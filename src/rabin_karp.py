@@ -1,9 +1,7 @@
 import time
-import math
 
 
 class RabinKarp:
-    """Реализация алгоритма Рабина-Карпа с поддержкой разных хеш-функций"""
 
     def __init__(self, hash_func, hash_name: str = ""):
         self.hash_func = hash_func
@@ -18,54 +16,45 @@ class RabinKarp:
         self.time_ns = 0
 
     def _get_rolling_func(self, pattern_length: int, p: int = 31, m: int = 10 ** 9 + 7):
-        """Возвращает правильную функцию скользящего хеша для текущей хеш-функции"""
 
         # Для linear_hash (линейный поиск) - НЕТ скользящего хеша
         if "linear" in self.hash_name.lower():
             return None  # Будем пересчитывать каждый раз
 
-        # Для simple_hash (сумма кодов)
         if "simple" in self.hash_name.lower():
             return self._simple_rolling
 
-        # Для weighted_sum_hash
         elif "weighted" in self.hash_name.lower():
             return self._weighted_rolling
 
-        # Для polynomial_hash
         elif "polynomial" in self.hash_name.lower():
             return lambda h, old, new: self._polynomial_rolling(h, old, new, pattern_length, p, m)
 
-        # Для остальных - пересчитываем с нуля
         else:
             return None
 
     def _simple_rolling(self, old_hash: int, old_char: str, new_char: str) -> int:
-        """Скользящий хеш для simple_hash (сумма кодов)"""
+        # Скользящий хеш для simple_hash (сумма кодов)
         return old_hash - ord(old_char) + ord(new_char)
 
     def _weighted_rolling(self, old_hash: int, old_char: str, new_char: str,
                           first_char_weight: int, base: int = 31) -> int:
-        """Скользящий хеш для weighted_sum_hash"""
-        # Вычитаем первый символ с весом, делим на base, добавляем новый
+        # Скользящий хеш для weighted_sum_hash
         return (old_hash - ord(old_char) * first_char_weight) * base + ord(new_char)
 
     def _polynomial_rolling(self, old_hash: int, old_char: str, new_char: str,
                             m: int, p: int = 31, mod: int = 10 ** 9 + 7) -> int:
-        """Скользящий хеш для polynomial_hash"""
-        # Предварительно вычисляем p^(m-1) mod mod
+        # Скользящий хеш для polynomial_hash
         p_pow = pow(p, m - 1, mod)
 
-        # Удаляем старый символ: old_hash = old_char*p^(m-1) + остальное
         new_hash = (old_hash - ord(old_char) * p_pow) % mod
 
-        # Умножаем на p и добавляем новый символ
         new_hash = (new_hash * p + ord(new_char)) % mod
 
         return new_hash
 
     def _linear_search(self, pattern: str, text: str, start_time: int) -> int:
-        """Оптимизированный линейный поиск для linear_hash"""
+        # Оптимизированный линейный поиск для linear_hash
         m = len(pattern)
         n = len(text)
         total_windows = n - m + 1
@@ -73,13 +62,13 @@ class RabinKarp:
         # Простой линейный поиск
         for i in range(total_windows):
             if text[i:i + m] == pattern:
-                self.checks = i + 1  # сколько окон проверили до нахождения
+                self.checks = i + 1
                 self.collisions = 0  # коллизий нет
                 self.time_ns = time.perf_counter_ns() - start_time
                 return i
 
         # Не нашли
-        self.checks = total_windows  # проверили все окна
+        self.checks = total_windows
         self.collisions = 0
         self.time_ns = time.perf_counter_ns() - start_time
         return -1
@@ -89,10 +78,10 @@ class RabinKarp:
         self.collisions = 0
         self.checks = 0
 
-        # Начинаем замер времени
+        # замер времени
         start_time = time.perf_counter_ns()
 
-        # Проверка входных данных
+        # Проверка данных
         if not pattern or not text or len(pattern) > len(text):
             self.time_ns = time.perf_counter_ns() - start_time
             return -1
@@ -100,10 +89,9 @@ class RabinKarp:
         m = len(pattern)
         n = len(text)
 
-        # СПЕЦИАЛЬНАЯ ОБРАБОТКА ДЛЯ LINEAR_HASH
+        # ОБРАБОТКА ДЛЯ LINEAR_HASH
         if "linear" in self.hash_name.lower():
             return self._linear_search(pattern, text, start_time)
-
 
         """
         Поиск паттерна в тексте.
@@ -121,8 +109,8 @@ class RabinKarp:
             self.time_ns = time.perf_counter_ns() - start_time
             return -1
 
-        m = len(pattern)  # длина паттерна
-        n = len(text)  # длина текста
+        m = len(pattern)
+        n = len(text)
 
         # 1. Вычисляем хеш паттерна
         pattern_hash = self.hash_func(pattern)
@@ -134,7 +122,6 @@ class RabinKarp:
         # 3. Получаем функцию для скользящего хеша
         rolling_func = self._get_rolling_func(m)
 
-        # Для weighted_hash нужно вычислить вес первого символа
         first_char_weight = 1
         if "weighted" in self.hash_name.lower():
             first_char_weight = 31 ** (m - 1)
@@ -155,7 +142,6 @@ class RabinKarp:
                     # Коллизия: хеши совпали, но строки разные
                     self.collisions += 1
 
-            # Пересчитываем хеш для следующего окна (если оно есть)
             if i < n - m:
                 if rolling_func:
                     old_char = text[i]
@@ -177,7 +163,7 @@ class RabinKarp:
         return -1
 
     def get_stats(self) -> dict:
-        """Возвращает статистику выполнения"""
+        # Возвращает статистику выполнения
         return {
             "collisions": self.collisions,
             "checks": self.checks,

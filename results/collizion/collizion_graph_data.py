@@ -1,31 +1,26 @@
 import csv
 import os
 
-from src.double_hash import double_hash
-from src.hash_simple import simple_hash
-from src.linear_search import linear_search
-from src.lite_crc32 import rolling_crc32
 from src.chetsum_hash import chetsum_hash
-from src.rabin_karp import RabinKarp
+from src.double_hash import double_hash
 from src.first_last_hash import first_last_hash
+from src.hash_simple import simple_hash
+from src.lite_crc32 import rolling_crc32
+from src.rabin_karp import RabinKarp
 
 collizion_file_name = "war_and_peace.txt"
 
 
 def load_text(filepath: str) -> str:
-    """Загружает текст из файла"""
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return f.read()
     except:
-        # Пробуем другую кодировку если UTF-8 не работает
         with open(filepath, 'r', encoding='latin-1') as f:
             return f.read()
 
 
 def save_to_csv(data, filename=f"results/collizion/collision_graph_data_{collizion_file_name[:-4]}.csv"):
-    """Сохраняет данные о коллизиях в CSV файл"""
-
     with open(filename, 'w', encoding='utf-8', newline='') as csvfile:
         writer = csv.writer(csvfile)
 
@@ -83,11 +78,9 @@ def create_collision_metrics():
     print(f"Файл: {path_to_file}")
     print(f"Длина текста: {len(text)} символов")
 
-
     # Данные для CSV
     csv_data = []
 
-    # Словарь с ДНК паттернами
     dna_patterns = {
         2: "AT",
         3: "ATC",
@@ -107,15 +100,12 @@ def create_collision_metrics():
 
     # Основной цикл тестирования
     for pattern_len in pattern_lengths:
-        # Берём паттерн из словаря или генерируем
         if pattern_len in dna_patterns:
             pattern = dna_patterns[pattern_len]
         else:
-            # Генерируем случайный ДНК паттерн
             import random
             pattern = "".join(random.choice("ATCG") for _ in range(pattern_len))
 
-        # Проверяем, что можем взять паттерн
         if pattern_len > len(text):
             print(f"Пропускаем паттерн {pattern_len} символов: длиннее текста")
             continue
@@ -126,13 +116,10 @@ def create_collision_metrics():
             # Создаем алгоритм
             algorithm = RabinKarp(hash_func)
 
-            # Запускаем поиск
             position = algorithm.find(pattern, text)
 
-            # Получаем статистику
             stats = algorithm.get_stats()
 
-            # Сохраняем данные для CSV
             csv_data.append([
                 hash_name,
                 pattern_len,
@@ -145,18 +132,15 @@ def create_collision_metrics():
                 position
             ])
 
-
-    # Сохраняем данные
     if csv_data:
         csv_filename = save_to_csv(csv_data)
 
-        # Создаём текстовую сводку
         summary_filename = f"results/collizion/collision_graph_summary_{collizion_file_name[:-4]}.txt"
         with open(summary_filename, 'w', encoding='utf-8') as f:
             f.write("СВОДКА РЕЗУЛЬТАТОВ КОЛЛИЗИЙ НА ДНК\n")
             f.write("=" * 70 + "\n\n")
 
-            # Группируем по функциям
+            # Группируем
             hash_results = {}
             for row in csv_data:
                 hash_name = row[0]

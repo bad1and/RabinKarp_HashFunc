@@ -6,5 +6,5 @@ def simple_hash(s: str) -> int:
     """
     h = 0
     for char in s:
-        h += ord(char)  # ord() возвращает код символа
+        h += ord(char)
     return h

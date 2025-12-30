@@ -13,19 +13,16 @@ checks_file_name = "stih.txt"
 
 
 def load_text(filepath: str) -> str:
-    """Загружает текст из файла"""
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return f.read()
     except:
-        # Пробуем другую кодировку если UTF-8 не работает
+
         with open(filepath, 'r', encoding='latin-1') as f:
             return f.read()
 
 
 def save_to_csv(data, filename=f"results/checks/checks_graph_data_{checks_file_name[:-4]}.csv"):
-    """Сохраняет данные о коллизиях в CSV файл"""
-
     with open(filename, 'w', encoding='utf-8', newline='') as csvfile:
         writer = csv.writer(csvfile)
 
@@ -42,7 +39,6 @@ def save_to_csv(data, filename=f"results/checks/checks_graph_data_{checks_file_n
             'position'
         ])
 
-        # Данные
         for row in data:
             writer.writerow(row)
 
@@ -53,7 +49,7 @@ def create_checks_metrics():
     ##############################################################
     # ИЗМЕНЯЕМЫЕ ПАРАМЕТРЫ
 
-    # Длины паттернов для тестирования коллизий (меньше и короче)
+    # Длины паттернов
     pattern_lengths = [2, 3, 4, 6, 8, 10, 12, 16, 20, 25, 30, 40, 50, 100]
 
     # Хеш-функции с именами
@@ -67,13 +63,11 @@ def create_checks_metrics():
     ]
     ##############################################################
 
-    # Проверяем наличие файла
     path_to_file = f"texts/{checks_file_name}"
     if not os.path.exists(path_to_file):
         print(f"Файл {path_to_file} не найден!")
         return
 
-    # Загружаем текст
     text = load_text(path_to_file)
     if not text:
         print("Ошибка: не удалось загрузить текст")
@@ -87,7 +81,6 @@ def create_checks_metrics():
     # Данные для CSV
     csv_data = []
 
-    # Словарь с ДНК паттернами
     dna_patterns = {
         2: "AT",
         3: "ATC",
@@ -107,15 +100,12 @@ def create_checks_metrics():
 
     # Основной цикл тестирования
     for pattern_len in pattern_lengths:
-        # Берём паттерн из словаря или генерируем
         if pattern_len in dna_patterns:
             pattern = dna_patterns[pattern_len]
         else:
-            # Генерируем случайный ДНК паттерн
             import random
             pattern = "".join(random.choice("ATCG") for _ in range(pattern_len))
 
-        # Проверяем, что можем взять паттерн
         if pattern_len > len(text):
             print(f"Пропускаем паттерн {pattern_len} символов: длиннее текста")
             continue
@@ -126,13 +116,11 @@ def create_checks_metrics():
             # Создаем алгоритм
             algorithm = RabinKarp(hash_func)
 
-            # Запускаем поиск
             position = algorithm.find(pattern, text)
 
-            # Получаем статистику
             stats = algorithm.get_stats()
 
-            # Сохраняем данные для CSV
+            # для метрик
             csv_data.append([
                 hash_name,
                 pattern_len,
@@ -145,17 +133,16 @@ def create_checks_metrics():
                 position
             ])
 
-    # Сохраняем данные
+    # Сохраняем
     if csv_data:
         csv_filename = save_to_csv(csv_data)
 
-        # Создаём текстовую сводку
         summary_filename = f"results/checks/checks_graph_summary_{checks_file_name[:-4]}.txt"
         with open(summary_filename, 'w', encoding='utf-8') as f:
             f.write("СВОДКА РЕЗУЛЬТАТОВ КОЛЛИЗИЙ НА ДНК\n")
             f.write("=" * 70 + "\n\n")
 
-            # Группируем по функциям
+            # Группируем
             hash_results = {}
             for row in csv_data:
                 hash_name = row[0]

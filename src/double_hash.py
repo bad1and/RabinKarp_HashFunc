@@ -16,4 +16,4 @@ def double_hash(s: str) -> int:
         h1 = (h1 * p1 + code) % m1
         h2 = (h2 * p2 + code) % m2
 
-    return (h1 << 32) | h2  # объединяем два хеша
+    return (h1 << 32) | h2

@@ -7,9 +7,6 @@ from results.time.time_graph_data import time_file_name
 
 
 def create_time_graphs(csv_file=f"results/time/time_graph_data_{time_file_name[:-4]}.csv"):
-    """Создает все 3 графика из CSV файла"""
-
-    # Загружаем данные
     df = pd.read_csv(csv_file)
 
     # 1. ГРАФИК ВРЕМЕНИ РАБОТЫ
@@ -75,17 +72,9 @@ def create_collizion_graphs(csv_file=f"results/collizion/collision_graph_data_{c
 
     plt.xscale('linear')
     plt.yscale('linear')
-    # plt.ylim(bottom=0.1)  # начинаем с 0.1 чтобы видеть нули на логарифмической шкале
-
-    # Деления оси X (все значения длины паттерна)
-    # plt.xticks(sorted(df['pattern_length'].unique()))
 
     plt.legend(fontsize=12, title="Хеш-функции", title_fontsize=13)
     plt.grid(True, alpha=0.3)
-
-    # # Добавляем горизонтальные линии для наглядности
-    # for y in [1, 10, 100, 1000, 10000]:
-    #     plt.axhline(y=y, color='gray', linestyle='--', alpha=0.2)
 
     plt.tight_layout()
     plt.savefig(f"results/collizion/collizion_graph_data_{collizion_file_name[:-4]}.png", dpi=300)
@@ -109,7 +98,7 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
         'linear_search': 'black',
     }
 
-    # Основные хеш-функции на ax1
+    # хеш-функции на ax1
     for hash_func in df['hash_function'].unique():
         if hash_func == 'linear_search':
             continue
@@ -140,7 +129,7 @@ def create_checks_graphs(csv_file=f"results/checks/checks_graph_data_{checks_fil
     plt.title(f"График проверок ({checks_file_name})",
               fontsize=16, fontweight='bold', pad=20)
 
-    # Объединяем легенды
+    #  легенды
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2, labels1 + labels2,
